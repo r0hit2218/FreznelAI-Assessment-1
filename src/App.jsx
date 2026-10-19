@@ -66,7 +66,8 @@ function App() {
   const [processSearch, setProcessSearch] = useState(''), [showHelp, setShowHelp] = useState(false), [notice, setNotice] = useState('');
   const nav = [{label:'Overview',icon:Gauge},{label:'Processes',icon:Terminal},{label:'Performance',icon:Activity},{label:'Storage',icon:HardDrive},{label:'Network',icon:Network}];
   const refresh = useCallback(async () => {
-    try { const r = await fetch('/api/system'); if (!r.ok) throw new Error(`System API returned ${r.status}`); const d = await r.json(); setSystem(d); setError('');
+    try { const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+const r = await fetch(`${API_BASE_URL}/api/system`); if (!r.ok) throw new Error(`System API returned ${r.status}`); const d = await r.json(); setSystem(d); setError('');
       setHistory(h => ({cpu:[...h.cpu.slice(-39), d.cpu.usage],mem:[...h.mem.slice(-39), d.memory.active],net:[...h.net.slice(-39), d.network.reduce((s,n)=>s+n.rx_sec+n.tx_sec,0)]}));
     } catch (e) { setError('System API unavailable. Start the Node.js server with npm run server.'); }
   }, []);
