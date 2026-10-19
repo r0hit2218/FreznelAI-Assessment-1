@@ -3,7 +3,6 @@ import http from 'node:http';
 import os from 'node:os';
 import si from 'systeminformation';
 
-const PORT = 4174;
 
 class SystemMonitor {
   async getSnapshot() {
@@ -71,6 +70,7 @@ const monitor = new SystemMonitor();
 const server = http.createServer(async (req, res) => {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('Access-Control-Allow-Origin', '*');
 
   if (req.url === '/api/health') {
     res.writeHead(200);
@@ -95,6 +95,8 @@ const server = http.createServer(async (req, res) => {
   res.end(JSON.stringify({ error: 'Not found' }));
 });
 
-server.listen(PORT, '127.0.0.1', () => {
-  console.log(`Freznel system API listening at http://127.0.0.1:${PORT}`);
+const PORT = process.env.PORT || 4174;
+
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`System monitor running on port ${PORT}`);
 });
